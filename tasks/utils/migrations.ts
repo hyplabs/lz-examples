@@ -15,7 +15,7 @@ const network = process.env.HARDHAT_NETWORK || argValue('--network', DEFAULT_NET
 const CONTRACTS_PATH = `./${network}-contracts.json`;
 const contractsFile = (_network = undefined) => path.join(__dirname, `./${_network || network}-contracts.json`);
 
-export const contractsDeployed = JSON.parse(fs.readFileSync(contractsFile(), 'utf8'));
+export const contractsDeployed = () => JSON.parse(fs.readFileSync(contractsFile(), 'utf8'));
 export const contractsDeployedOn = (_network) => JSON.parse(fs.readFileSync(contractsFile(_network), 'utf8'));
 
 export const updateContractsDeployed = (contract, address, network = DEFAULT_NETWORK) => {

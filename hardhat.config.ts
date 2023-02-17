@@ -6,7 +6,6 @@ dotenv.config({ path: '.env' });
 
 import '@nomiclabs/hardhat-ethers';
 import '@nomiclabs/hardhat-etherscan';
-import '@tenderly/hardhat-tenderly';
 import '@typechain/hardhat';
 import 'hardhat-deploy';
 import 'hardhat-gas-reporter';
@@ -86,10 +85,6 @@ const config = {
     apiKey: {
       polygonMumbai: process.env.ETHERSCAN_API_KEY
     }
-  },
-  tenderly: {
-    project: process.env.TENDERLY_PROJECT,
-    username: process.env.TENDERLY_USERNAME,
   },
 };
 

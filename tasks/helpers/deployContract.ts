@@ -1,4 +1,4 @@
-import { updateContractsDeployed } from './../../scripts/utils/migrations';
+import { updateContractsDeployed } from './../utils/migrations';
 
 const deployContract = async (ethers: any, networkName: string, contractName: string, args: any[] = []) => {
   console.log(`deploying contract ${contractName} ...`);

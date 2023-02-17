@@ -1,5 +1,5 @@
 {
-  "name": "lz-onft-example",
+  "name": "lz-examples",
   "version": "0.0.1",
   "author": "hyplabs",
   "license": "MIT",
@@ -15,13 +15,11 @@
     "compile": "npx hardhat compile",
     "test": "REPORT_GAS=true npx hardhat test",
     "quick-test": "npx hardhat test",
-    "etherscan:verify": "npx hardhat verify --network mumbai 0x0",
-    "t:push": "npx hardhat tenderly:push ONFT=0x --network mumbai"
+    "etherscan:verify": "npx hardhat verify --network mumbai 0x0"
   },
   "dependencies": {
     "@layerzerolabs/solidity-examples": "^0.0.8",
-    "@rari-capital/solmate": "^6.4.0",
-    "@tenderly/hardhat-tenderly": "^1.1.5"
+    "@rari-capital/solmate": "^6.4.0"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
