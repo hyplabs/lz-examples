@@ -45,7 +45,7 @@ Simulate the typical user flow with a series of transactions, which involve a br
 3. if we attempt to attack another player with our NFT on the destination chain, we'll see that it reverts because our token was burned
 4. we can check [LayerZero Scan](https://layerzeroscan.com/) to validate that our message was relayed
 5. on the destination chain, we can attack another player with our newly minted NFT
-```
+```bash
 npx hardhat simulate-bridge-onft --network mumbai --remote goerli
 
 npx hardhat simulate-bridge-onft --network goerli --remote mumbai --attack

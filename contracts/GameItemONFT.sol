@@ -91,6 +91,7 @@ contract GameItemONFT is ONFT1155 {
     // attacking a defenseless player, shame!
     require(equippedItems[otherPlayer] != 0, "DEFENSELESS");
 
+    // the player _had_ an equipped item, but then bridged it
     if (balanceOf(otherPlayer, equippedItems[otherPlayer]) == 0) {
       equippedItems[otherPlayer] = 0;
     }
