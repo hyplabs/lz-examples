@@ -1,7 +1,10 @@
 export const MAX_UINT256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const SAMPLE_ERC1155_URI = 'ar://jBxzAzuA5HjHZUluG0vR-fnNQX9j0EZYnXUcxAj3rS8/{id}';
+export const SAMPLE_ERC721_NAME = 'MY_GREAT_ONFT';
+export const SAMPLE_ERC721_SYMBOL = 'O-NFT';
 export const EMPTY_BYTES = [];
+export const MIN_GAS_TO_TRANSFER = 75_000 // safe number
 
 export const LZ_CONFIG = {
   mumbai: {

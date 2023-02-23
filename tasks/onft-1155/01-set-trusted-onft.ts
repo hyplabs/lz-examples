@@ -2,12 +2,12 @@ import '@nomiclabs/hardhat-ethers';
 import { task } from 'hardhat/config';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import getContract from './../helpers/getContract';
-import { LZ_CONFIG, SAMPLE_ERC1155_URI } from './../helpers/constants';
+import { LZ_CONFIG } from './../helpers/constants';
 import { contractsDeployedOn } from './../utils/migrations';
 
 export let runtimeHRE: HardhatRuntimeEnvironment;
 
-task('set-trusted-onft', 'set the trusted remote for GameItemONFT')
+task('set-trusted-onft', 'set the trusted remote for GameItemONFT1155')
   .addParam('remote')
   .setAction(async ({ remote }, hre) => {
   runtimeHRE = hre;
@@ -20,14 +20,14 @@ task('set-trusted-onft', 'set the trusted remote for GameItemONFT')
 
   const onft = await getContract(
     ethers,
-    'GameItemONFT',
+    'GameItemONFT1155',
     deployer,
   );
 
-  console.log('GameItemONFT.setTrustedRemoteAddress()');
+  console.log('GameItemONFT1155.setTrustedRemoteAddress()');
   const tx = await onft.setTrustedRemoteAddress(
     LZ_CONFIG[remote].chainId,
-    contractsDeployedOn(remote).GameItemONFT
+    contractsDeployedOn(remote).GameItemONFT1155
   );
   console.log(`tx: ${tx.hash}`);
   await tx.wait();

@@ -6,7 +6,7 @@ import { LZ_CONFIG, SAMPLE_ERC1155_URI } from './../helpers/constants';
 
 export let runtimeHRE: HardhatRuntimeEnvironment;
 
-task('deploy-onft', 'deploys the GameItemONFT to the given network with the right LzEndpoint')
+task('deploy-onft', 'deploys the GameItemONFT1155 to the given network with the right LzEndpoint')
   .setAction(async ({}, hre) => {
   runtimeHRE = hre;
   const ethers = hre.ethers;
@@ -18,7 +18,7 @@ task('deploy-onft', 'deploys the GameItemONFT to the given network with the righ
   await deployContract(
     ethers,
     networkName,
-    'GameItemONFT',
+    'GameItemONFT1155',
     [
       SAMPLE_ERC1155_URI,
       LZ_CONFIG[networkName].endpoint

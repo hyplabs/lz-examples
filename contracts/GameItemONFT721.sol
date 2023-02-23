@@ -2,16 +2,16 @@
 
 pragma solidity 0.8.10;
 
-import {ONFT1155} from "@layerzerolabs/solidity-examples/contracts/token/onft/ONFT1155.sol";
+import {ONFT721} from "@layerzerolabs/solidity-examples/contracts/token/onft/ONFT721.sol";
 
 /**
- * @title GameItemONFT
- * @notice A simple ERC1155 implementation with the following functionality
+ * @title GameItemONFT721
+ * @notice A simple ERC721 implementation with the following functionality
  * - permissioned mints
  * - token owners can equip a single NFT to represent them during a "battle" with another token owner
  * - token owners can bridge their NFT to another supported chain (via layerzero)
  */
-contract GameItemONFT is ONFT1155 {
+contract GameItemONFT721 is ONFT721 {
   struct PlayerScore {
     uint256 totalWins;
     uint256 totalLosses;
@@ -21,36 +21,38 @@ contract GameItemONFT is ONFT1155 {
   mapping (address => PlayerScore) public scores; // account => PlayerScore
 
   address public zroPaymentAddress; // the address of the ZRO token holder who would pay for all transactions
+  uint256 public tokenIdCounter; // token ids will be 1-based
 
   modifier onlyTokenOwner(uint256 id) {
-    require(balanceOf(msg.sender, id) != 0, "ONLY_TOKEN_OWNER");
+    require(ownerOf(id) == msg.sender, "ONLY_TOKEN_OWNER");
     _;
   }
 
   /**
    * @notice contract constructor
-   * @param _uri The URI for all token types by relying on ID substitution
+   * @param _name The NFT name
+   * @param _symbol The NFT symbol
+   * @param _minGasToTransfer The min amount of gas required to transfer, and also store the payload
    * @param _lzEndpoint The lz endpoint contract deployed on this chain
    */
   constructor(
-    string memory _uri,
+    string memory _name,
+    string memory _symbol,
+    uint256 _minGasToTransfer,
     address _lzEndpoint
-  ) ONFT1155(_uri, _lzEndpoint) {}
+  ) ONFT721(_name, _symbol, _minGasToTransfer, _lzEndpoint) {}
 
   /**
    * @notice allows the contract owner to mint one token for the given `to` address
    * @param to the address to receive the new token
-   * @param id the id of the new token
    */
-  function mint(address to, uint256 id) external onlyOwner {
-    require(id != 0, "NOT_ZERO");
-
+  function mint(address to) external onlyOwner {
     // mint the item
-    _mint(to, id, 1, bytes(""));
+    _mint(to, ++tokenIdCounter);
 
     // auto-equip the item for the player if none is already equipped
     if (equippedItems[to] == 0) {
-      equippedItems[to] = id;
+      equippedItems[to] = tokenIdCounter;
     }
   }
 
@@ -64,18 +66,17 @@ contract GameItemONFT is ONFT1155 {
   }
 
   /**
-   * @notice allows a token owner to bridge their tokens to another chain, by burning them on this one
+   * @notice allows a token owner to bridge their tokens to another chain, by locking them on this one
    * NOTE: the chain must be set as a trusted remote
    * @param id the id of the token to bridge
-   * @param amount the amount of tokens to bridge
    * @param toChainId the lz chain id to bridge the token to
    */
-  function bridge(uint256 id, uint256 amount, uint16 toChainId) external payable {
+  function bridge(uint256 id, uint16 toChainId) external payable {
     sendFrom(
       msg.sender,
       toChainId,
       abi.encodePacked(msg.sender),
-      id, amount,
+      id,
       payable(msg.sender),
       zroPaymentAddress,
       bytes("")
@@ -92,7 +93,7 @@ contract GameItemONFT is ONFT1155 {
     require(equippedItems[otherPlayer] != 0, "DEFENSELESS");
 
     // the player _had_ an equipped item, but then bridged it
-    if (balanceOf(otherPlayer, equippedItems[otherPlayer]) == 0) {
+    if (!_exists(equippedItems[otherPlayer])) {
       equippedItems[otherPlayer] = 0;
     }
 
