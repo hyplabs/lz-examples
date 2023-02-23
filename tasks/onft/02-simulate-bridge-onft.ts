@@ -45,18 +45,19 @@ task('simulate-bridge-onft', 'simulates a flow on GameItemONFT: mint, equip, bri
   if (!attack) {
     let tx;
 
-    // // mint ourselves a token
-    // console.log(`GameItemONFT.mint(${deployerAddress}, ${MINT_TOKEN_ID})`);
-    // tx = await onft.mint(deployerAddress, MINT_TOKEN_ID);
-    // console.log(`tx: ${tx.hash}`);
-    // await tx.wait();
+    // 1. mint ourselves a token
+    console.log(`GameItemONFT.mint(${deployerAddress}, ${MINT_TOKEN_ID})`);
+    tx = await onft.mint(deployerAddress, MINT_TOKEN_ID);
+    console.log(`tx: ${tx.hash}`);
+    await tx.wait();
 
-    // it should be auto-equipped, meaning we can use it for attacks
+    // 2. it should be auto-equipped, meaning we can use it for attacks
     const equippedTokenId = await onft.equippedItems(deployerAddress);
     console.log(`equippedItems[${deployerAddress}] => ${equippedTokenId.toNumber()}`);
 
-    // let's estimate the fee for the bridge (second value is the `zroFee`, irrelevant for now)
-    // @TODO: this is returning a stupid high number
+    // 3. let's estimate the fee for the bridge (second value is the `zroFee`, irrelevant for now)
+    // NOTE: during gas spikes, this will be a high value. you can check the averages at
+    // https://stargate.finance/transfer => under 'Check Transfer Gas Estimator'
     const [nativeFee, _] = await onft.estimateSendFee(
       LZ_CONFIG[remote].chainId,
       ethers.utils.solidityPack(['bytes'], [deployerAddress]),
@@ -68,15 +69,15 @@ task('simulate-bridge-onft', 'simulates a flow on GameItemONFT: mint, equip, bri
 
     console.log(`native fee in ${['mumbai', 'polygon'].includes(networkName) ? 'matic' : 'ether'}`, ethers.utils.formatEther(nativeFee));
 
-    // bridge it, and pay the native fee
+    // 4. bridge it, and pay the native fee
     console.log(`GameItemONFT.bridge(${MINT_TOKEN_ID}, 1, ${LZ_CONFIG[remote].chainId})`);
     tx = await onft.bridge(MINT_TOKEN_ID, 1, LZ_CONFIG[remote].chainId, { value: nativeFee });
     console.log(`tx: ${tx.hash}`);
     await tx.wait();
 
-    // check https://layerzeroscan.com/ with the above tx hash
+    // 5. check https://layerzeroscan.com/ with the above tx hash
 
-    // will revert
+    // 6. will revert because our balance on this chain should now be 0
     try {
       tx = await onft.setEquippedItem(MINT_TOKEN_ID);
       console.log(`did not revert... ${tx.hash}`);
